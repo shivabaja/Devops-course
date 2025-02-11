@@ -3,7 +3,7 @@ pipeline {
 
     // Parameters section (optional)
     parameters {
-        string(name: 'GIT_REPO_URL', defaultValue: 'https://github.com/example/repo.git', description: 'Git repository URL')
+        string(name: 'GIT_REPO_URL', defaultValue: 'https://github.com/shivabaja/Devops-course.git', description: 'Git repository URL')
     }
 
     environment {
