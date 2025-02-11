@@ -1,0 +1,57 @@
+pipeline {
+    agent any
+
+    // Parameters section (optional)
+    parameters {
+        string(name: 'GIT_REPO_URL', defaultValue: 'https://github.com/example/repo.git', description: 'Git repository URL')
+    }
+
+    environment {
+        // Environment variables (optional)
+        MY_ENV_VAR = 'Some value'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from Git repository using the parameter
+                git url: "${params.GIT_REPO_URL}", branch: 'main'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Run Maven build (adjust based on your build tool)
+                script {
+                    if (fileExists('pom.xml')) {
+                        echo 'Running Maven build...'
+                        sh 'mvn clean install'
+                    } else {
+                        echo 'No pom.xml file found, skipping Maven build.'
+                    }
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                // Run tests (could be unit tests, integration tests, etc.)
+                echo 'Running tests...'
+                sh 'mvn test'  // Replace this with your test command, if needed
+            }
+        }
+
+        stage('Archive Artifacts') {
+            steps {
+                // Archive build artifacts and test results
+                archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+                junit '**/target/test-*.xml'  // If using JUnit tests, adjust path as necessary
+            }
+        }
+    }
+
+    post {
+        success {
+            // Actions to take if the pipeline succeeds
+            echo 'Build completed successfully!'
+        }
